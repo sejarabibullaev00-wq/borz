@@ -1,0 +1,87 @@
+
+
+
+
+SELECT 
+    t.name AS TableName,
+    fg.name AS FileGroupName
+FROM sys.tables t
+JOIN sys.indexes i ON t.object_id = i.object_id
+JOIN sys.filegroups fg ON i.data_space_id = fg.data_space_id
+WHERE i.index_id <= 1
+ORDER BY t.name;
+
+
+
+
+SELECT 
+    t.name AS TableName,
+    i.name AS IndexName,
+    i.type_desc AS IndexType
+FROM sys.indexes i
+JOIN sys.tables t ON i.object_id = t.object_id
+WHERE i.name IS NOT NULL
+ORDER BY t.name;
+
+
+
+
+SELECT 
+    fg.name AS FileGroupName,
+    mf.name AS LogicalFileName,
+    mf.physical_name AS PhysicalPath,
+    mf.size / 128 AS SizeMB
+FROM sys.filegroups fg
+JOIN sys.master_files mf 
+    ON fg.data_space_id = mf.data_space_id
+ORDER BY fg.name;
+
+
+
+
+SELECT 
+    name AS ObjectName,
+    type_desc AS ObjectType,
+    create_date AS CreatedDate,
+    modify_date AS ModifiedDate
+FROM sys.objects
+WHERE type IN ('P', 'FN', 'IF', 'TF', 'TR', 'V')
+ORDER BY type_desc, name;
+
+
+
+
+SELECT 
+    t.name AS TableName,
+    c.name AS ColumnName,
+    c.definition AS Formula,
+    c.is_persisted AS IsPersisted
+FROM sys.computed_columns c
+JOIN sys.tables t ON c.object_id = t.object_id
+ORDER BY t.name;
+
+
+
+
+EXEC sp_spaceused;
+
+
+
+/*
+1. Правой кнопкой на базе -> Reports -> Standard Reports:
+   - Disk Usage
+   - Index Usage Statistics
+   - All Indexes
+   - Table and Index Size
+*/
+
+
+
+/*
+git init
+git add .
+git commit -m "Урок 24. Сдача зачета: индексы, файловые группы, отчеты"
+git remote add origin https://github.com/ВАШ_ЛОГИН/ВАШ_РЕПОЗИТОРИЙ.git
+git branch -M main
+git push -u origin main
+*/
